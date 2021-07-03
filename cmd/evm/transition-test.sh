@@ -154,9 +154,7 @@ echo ""
 echo "The \`BLOCKHASH\` opcode requires blockhashes to be provided by the caller, inside the \`env\`."
 echo "If a required blockhash is not provided, the exit code should be \`4\`:"
 echo "Example where blockhashes are provided: "
-cmd="./evm t8n --input.alloc=./testdata/3/alloc.json --input.txs=./testdata/3/txs.json --input.env=./testdata/3/env.json  --trace"
-tick && echo $cmd && tick
-$cmd 2>&1 >/dev/null
+demo "./evm --verbosity=1 t8n --input.alloc=./testdata/3/alloc.json --input.txs=./testdata/3/txs.json --input.env=./testdata/3/env.json  --trace"
 cmd="cat trace-0-0x72fadbef39cd251a437eea619cfeda752271a5faaaa2147df012e112159ffb81.jsonl | grep BLOCKHASH -C2"
 tick && echo $cmd && tick
 echo "$ticks"
@@ -166,13 +164,11 @@ echo ""
 
 echo "In this example, the caller has not provided the required blockhash:"
 cmd="./evm t8n --input.alloc=./testdata/4/alloc.json --input.txs=./testdata/4/txs.json --input.env=./testdata/4/env.json  --trace"
-tick && echo $cmd && tick
-tick
-$cmd
+tick && echo $cmd && $cmd
 errc=$?
 tick
 echo "Error code: $errc"
-
+ecoh ""
 
 echo "### Chaining"
 echo ""
@@ -198,14 +194,8 @@ echo "It is possible to provide already-signed transactions as input to, using a
 echo "The input format for RLP-form transactions is _identical_ to the _output_ format for block bodies. Therefore, it's fully possible"
 echo "to use the evm to go from \`json\` input to \`rlp\` input."
 echo ""
-echo "$ticks"
 echo "The following command takes **json** the transactions in \`./testdata/12/txs.json\` and signs them. After execution, they are output to \`signed_txs.rlp\`.:"
-cmd="./evm t8n --state.fork=London --input.alloc=./testdata/12/alloc.json --input.txs=./testdata/12/txs.json --input.env=./testdata/12/env.json --output.result=alloc_jsontx.json --output.body=signed_txs.rlp"
-echo "$ticks"
-echo "$cmd"
-output=$($cmd)
-echo $output
-echo "$ticks"
+demo "./evm t8n --state.fork=London --input.alloc=./testdata/12/alloc.json --input.txs=./testdata/12/txs.json --input.env=./testdata/12/env.json --output.result=alloc_jsontx.json --output.body=signed_txs.rlp"
 echo "The \`output.body\` is the rlp-list of transactions, encoded in hex and placed in a string a'la \`json\` encoding rules:"
 demo "cat signed_txs.rlp"
 echo "We can use \`rlpdump\` to check what the contents are: "
